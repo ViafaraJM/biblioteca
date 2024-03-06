@@ -1,29 +1,10 @@
-image: php:latest
+deploy:
+  image: ubuntu
+  stage: deploy
+  before_script:
+    - echo "Algo"
+  script:
+    - echo "test"
 
 stages:
-  - build
-  - test
   - deploy
-
-build:
-  stage: build
-  script:
-    - docker-php-ext-install pdo pdo_mysql
-
-test:
-  stage: test
-  coverage: '/Total coverage ratio: \d+\.\d+\%/'
-  script:
-    - vendor/bin/phpunit --coverage-text --coverage-clover build/coverage.xml
-  artifacts:
-    paths:
-      - build/coverage.xml
-    reports:
-      cobertura: build/coverage.xml
-
-deploy:
-  stage: deploy
-  script:
-    - echo "Deploying to production..."
-  only:
-    - master
