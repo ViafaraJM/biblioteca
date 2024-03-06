@@ -3,18 +3,26 @@ package com.example.biblioteca.Libros;
 
 import com.example.biblioteca.Autor.Autor;
 import jakarta.persistence.*;
-
+@Entity
+@Table
 public class Libros {
-
+    public Libros() {}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(unique = true)
     private String titulo;
     private int anioPublicacion;
     private String genero;
-    @ManyToOne
-    @JoinColumn(name = "id_autor")
-    private Autor autor;
+    private int autor;
+
+    public Libros(int id, String titulo, int anioPublicacion, String genero, int autor) {
+        this.id = id;
+        this.titulo = titulo;
+        this.anioPublicacion = anioPublicacion;
+        this.genero = genero;
+        this.autor = autor;
+    }
 
     public int getId() {
         return id;
@@ -48,19 +56,13 @@ public class Libros {
         this.genero = genero;
     }
 
-    public Autor getAutor() {
+    public int getAutor() {
         return autor;
     }
 
-    public void setAutor(Autor autor) {
+    public void setAutor(int autor) {
         this.autor = autor;
     }
 
-    public Libros(int id, String titulo, int anioPublicacion, String genero, Autor autor) {
-        this.id = id;
-        this.titulo = titulo;
-        this.anioPublicacion = anioPublicacion;
-        this.genero = genero;
-        this.autor = autor;
-    }
+
 }
