@@ -1,38 +1,29 @@
-image: maven:3.6.1-jdk-8
+image: php:latest
 
-variables:
-  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
-  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
-  GITLAB_PERSONAL_TOKEN: "glpat-9g1Sxf414k7TdBE2Xs93"
+stages:
+  - build
+  - test
+  - deploy
 
-cache:
-  paths:
-    - .m2/repository/
-    - target/
-
-test_coverage:
-  stage: test
+build:
+  stage: build
   script:
-    - mvn clean test $MAVEN_CLI_OPTS
-  coverage: '/TOTAL.*\s+(\d+\%)/'
+    - docker-php-ext-install pdo pdo_mysql
+
+test:
+  stage: test
+  coverage: '/Total coverage ratio: \d+\.\d+\%/'
+  script:
+    - vendor/bin/phpunit --coverage-text --coverage-clover build/coverage.xml
   artifacts:
     paths:
-      - target/site/jacoco/jacoco.xml
+      - build/coverage.xml
+    reports:
+      cobertura: build/coverage.xml
 
-deploy_production:
+deploy:
   stage: deploy
   script:
-    - mvn clean deploy $MAVEN_CLI_OPTS
+    - echo "Deploying to production..."
   only:
     - master
-
-test_coverage_QA:
-  stage: test
-  script:
-    - mvn clean test $MAVEN_CLI_OPTS
-  coverage: '/TOTAL.*\s+(\d+\%)/'
-  artifacts:
-    paths:
-      - target/site/jacoco/jacoco.xml
-  only:
-    - QA
