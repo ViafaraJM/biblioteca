@@ -18,7 +18,7 @@ stages:
 test:
   stage: test
   script:
-    - docker build -t myproject-testing:latest -f Dockerfile.testing .
+    - docker build -t myproject-testing:latest -f Dockerfile .
     - docker run --rm -v $(pwd):/app -e DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB myproject-testing:latest
   coverage: '/TOTAL.*\s+(\d+\%)/'
 
@@ -42,7 +42,7 @@ deploy_production:
 deploy_testing:
   stage: deploy
   script:
-    - docker build -t myproject-testing:latest -f Dockerfile.testing .
+    - docker build -t myproject-testing:latest -f Dockerfile .
     - docker run --rm -d --name myproject-testing -p 8000:8000 -v $(pwd):/app -e DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB myproject-testing:latest
   only:
     - develop

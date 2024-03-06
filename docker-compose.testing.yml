@@ -4,7 +4,7 @@ services:
   app_testing:
     build:
       context: .
-      dockerfile: Dockerfile.testing
+      dockerfile: Dockerfile
     image: myproject-testing:latest
     volumes:
       - .:/app
