@@ -1,7 +1,29 @@
-build:
-  image: docker:19.03.12
+stages:
+  - build
+  - test
+  - deploy
+
+maven-build:
+  image: maven:3-jdk-8
   stage: build
+  script: "mvn clean package"
+  artifacts:
+    paths:
+      - target/*.jar
+
+maven-test:
+  image: maven:3-jdk-8
+  stage: test
+  script: "mvn test"
+  dependencies:
+    - maven-build
+
+deploy-production:
+  image: postgres:latest
+  stage: deploy
   script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG .
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - cp target/myapp.jar myapp.jar
+    - java -jar myapp.jar
+  when: manual
+  only:
+    - master
