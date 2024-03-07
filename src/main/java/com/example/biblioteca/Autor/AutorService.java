@@ -25,6 +25,7 @@ public class AutorService {
         return this.autorRepository.findAll();
     }
 
+
     public ResponseEntity<Object> newAutor(Autor autor) {
         Optional<Autor> res = autorRepository.findAutorByNombre(autor.getNombre());
         datos = new HashMap<>();
